@@ -1,0 +1,15 @@
+name "dvl_seapilot"
+
+using_libray "dvl_seapilot"
+
+import_types_from "base"
+import_types_from "dvl_seapilotTypes.hpp"
+task_context "Task" do
+    needs_configuration
+
+
+    output_port "velocity_samples", "base::samples::RigidBodyState"
+
+    periodic 0.1
+end
+
