@@ -1,13 +1,14 @@
 name "dvl_seapilot"
 
-using_libray "dvl_seapilot"
+using_library "dvl_seapilot"
 
 import_types_from "base"
 import_types_from "dvl_seapilotTypes.hpp"
 task_context "Task" do
     needs_configuration
 
-
+    
+    property "device", "std::string", "serial:///dev/ttyS6"
     output_port "velocity_samples", "base::samples::RigidBodyState"
 
     periodic 0.1
