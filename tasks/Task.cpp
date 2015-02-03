@@ -35,6 +35,8 @@ bool Task::startHook()
     if (! TaskBase::startHook())
         return false;
 
+    std::cout << _device.get() << std::endl;
+
     driver.open(_device.get());
 
     return true;
@@ -44,11 +46,13 @@ void Task::updateHook()
     TaskBase::updateHook();
 
     dvl_seapilot::Measurement measurement;
-    while(driver.readMeasurement(measurement)){
-        rbs.velocity[0] = measurement.bottom_x;
-        rbs.velocity[1] = measurement.bottom_y;
-        rbs.velocity[2] = measurement.bottom_z;
-    }
+    driver.readMeasurement(measurement);
+    rbs.velocity[0] = measurement.bottom_x;
+    rbs.velocity[1] = measurement.bottom_y;
+    rbs.velocity[2] = measurement.bottom_z;
+    
+
+    _velocity_samples.write(rbs);
 
 
 }

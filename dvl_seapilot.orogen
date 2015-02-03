@@ -8,7 +8,7 @@ task_context "Task" do
     needs_configuration
 
     
-    property "device", "std::string", "serial:///dev/ttyS6"
+    property "device", "std::string", "serial:///dev/ttyS6:115200"
     output_port "velocity_samples", "base::samples::RigidBodyState"
 
     periodic 0.1
