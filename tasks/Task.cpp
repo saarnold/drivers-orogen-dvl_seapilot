@@ -39,6 +39,8 @@ bool Task::startHook()
 
     driver.open(_device.get());
 
+    driver.startMeasurement();
+
     return true;
 }
 void Task::updateHook()
@@ -50,6 +52,11 @@ void Task::updateHook()
     rbs.velocity[0] = measurement.bottom_x;
     rbs.velocity[1] = measurement.bottom_y;
     rbs.velocity[2] = measurement.bottom_z;
+
+//    std::cout << "HEADING: " << measurement.bottom_heading << std::endl;
+//    std::cout << "PITCH:   " << measurement.bottom_pitch << std::endl;
+//    std::cout << "ROLL:    " << measurement.bottom_roll << std::endl;
+
     
 
     _velocity_samples.write(rbs);
