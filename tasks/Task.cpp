@@ -49,6 +49,7 @@ void Task::updateHook()
 
     dvl_seapilot::Measurement measurement;
     driver.readMeasurement(measurement);
+    rbs.time = base::Time::now();
     rbs.velocity[0] = measurement.bottom_x;
     rbs.velocity[1] = measurement.bottom_y;
     rbs.velocity[2] = measurement.bottom_z;
