@@ -1,16 +1,40 @@
 name "dvl_seapilot"
 
 using_library "dvl_seapilot"
+using_library "aggregator"
 
 import_types_from "base"
-import_types_from "dvl_seapilotTypes.hpp"
+import_types_from 'aggregator'
+import_types_from "dvl_teledyne/PD0Messages.hpp"
+
+using_task_library "iodrivers_base"
+
 task_context "Task" do
-    needs_configuration
-
+    subclasses "iodrivers_base::Task"
+    needs_configuration    
     
-    property "device", "std::string", "serial:///dev/ttyS6:115200"
-    output_port "velocity_samples", "base::samples::RigidBodyState"
+    # Standard deviation override
+    property('sigma_override', 'double', 0.0).
+        doc("If sigma_override is a valid value greater than zero, it will").
+        doc("be used to override the covariance of the velocity measurements.")
+        
+    #Default variance of avg ground-distance readings
+    property("variance_ground_distance", "double", 0.1)
+    
+    #Device information as read from the DVL (read-only)
+    property('device_info', 'dvl_teledyne/DeviceInfo')
 
-    periodic 0.1
+    output_port "status", "dvl_teledyne/Status"
+    output_port "cell_samples", "dvl_teledyne/CellReadings"
+    output_port "bottom_tracking_samples", "dvl_teledyne/BottomTracking"
+    output_port "velocity_samples", "base/samples/RigidBodyState"
+    #avg value of the ground distance between all 4 DVL Rays
+    output_port "ground_distance", "base/samples/RigidBodyState"
+
+    # Timestamp Estimator
+    #
+    # No need for a sample_loss_threshold property, as the DVL report sample
+    # indexes
+    output_port "timestamp_estimator_status", "/aggregator/TimestampEstimatorStatus"
 end
 

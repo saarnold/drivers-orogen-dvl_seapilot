@@ -9,5 +9,8 @@
   <depend package="base/cmake" />
   <depend package="base/types" />
   <depend package="drivers/dvl_seapilot" />
+  <depend package="drivers/dvl_teledyne" />
+  <depend package="drivers/aggregator" />
+  <depend package="drivers/orogen/iodrivers_base" />
   
 </package>
