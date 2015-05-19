@@ -130,6 +130,8 @@ bool Task::configureHook()
 {
     driver.reset(new dvl_seapilot::Driver);
     driver->setEnsembleInterval(_ensemble_interval.value());
+    driver->setReadTimeout(_io_read_timeout.value());
+    driver->setWriteTimeout(_io_write_timeout.value());
 
     if (!_io_port.value().empty())
         driver->open(_io_port.value());
