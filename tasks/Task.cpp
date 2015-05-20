@@ -100,7 +100,7 @@ void Task::processIO()
                 rbs_velocity.orientation  = driver->status.orientation;
                 rbs_velocity.velocity.x() = driver->bottomTracking.velocity[0];
                 rbs_velocity.velocity.y() = driver->bottomTracking.velocity[1];
-                rbs_velocity.velocity.z() = -driver->bottomTracking.velocity[2];
+                rbs_velocity.velocity.z() = driver->bottomTracking.velocity[2];
                 rbs_velocity.cov_velocity = var * Eigen::Matrix3d::Identity();
 
                 _velocity_samples.write(rbs_velocity);
