@@ -40,7 +40,10 @@ void Task::processIO()
     _status.write(driver->status);
 
     if (!driver->cellReadings.time.isNull())
+    {
         driver->cellReadings.time = time;
+        _cell_samples.write(driver->cellReadings);
+    }
 
     if (!driver->bottomTracking.time.isNull())
     {
