@@ -2,6 +2,7 @@
   <description brief="This is the orogen task for the rti seapilot dvl.">
   
   </description>
+  <maintainer>Sascha Arnold/sascha.arnold@dfki.de</maintainer>
   <author>Tim Lehr/tim.lehr@dfki.de</author>
   <license></license>
   <url>http://</url>
@@ -9,5 +10,8 @@
   <depend package="base/cmake" />
   <depend package="base/types" />
   <depend package="drivers/dvl_seapilot" />
+  <depend package="drivers/dvl_teledyne" />
+  <depend package="drivers/aggregator" />
+  <depend package="drivers/orogen/iodrivers_base" />
   
 </package>

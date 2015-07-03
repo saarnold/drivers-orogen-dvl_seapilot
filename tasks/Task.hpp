@@ -5,6 +5,8 @@
 
 #include "dvl_seapilot/TaskBase.hpp"
 #include <dvl_seapilot/Driver.hpp> 
+#include <boost/shared_ptr.hpp>
+#include <aggregator/TimestampEstimator.hpp>
 
 namespace dvl_seapilot {
 
@@ -27,8 +29,13 @@ namespace dvl_seapilot {
 	friend class TaskBase;
         
     protected:
-        base::samples::RigidBodyState rbs;
-        dvl_seapilot::Driver driver;
+        boost::shared_ptr<dvl_seapilot::Driver> driver;
+        boost::shared_ptr<aggregator::TimestampEstimator> timestamp_estimator;
+        
+        // The sequence number without wraparounds
+        uint64_t global_seq;
+        // The last received sequence number
+        int32_t last_seq;
 
     public:
         /** TaskContext constructor for Task
@@ -47,6 +54,11 @@ namespace dvl_seapilot {
         /** Default deconstructor of Task
          */
 	~Task();
+        
+        /** Called by iodrivers_base::Task when some data is available for
+         * processing
+         */
+        void processIO();
 
         /** This hook is called by Orocos when the state machine transitions
          * from PreOperational to Stopped. If it returns false, then the
