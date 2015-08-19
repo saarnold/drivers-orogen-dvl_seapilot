@@ -84,8 +84,6 @@ void Task::processIO()
         base::samples::RigidBodyState rbs_velocity;
         rbs_velocity.invalidate();
         rbs_velocity.time = time;
-        // set variance unknown
-        double var = base::unknown<float>();
 
         //check for nans 
         if( !base::isUnknown(driver->bottomTracking.velocity[0]) &&
@@ -93,21 +91,23 @@ void Task::processIO()
             !base::isUnknown(driver->bottomTracking.velocity[2]) &&
             !base::isUnknown(driver->bottomTracking.velocity[3]) )
         {
-            if(!base::isNaN<double>(_sigma_override.get()) && _sigma_override.get() != 0.0)
-                var = pow(_sigma_override.value(), 2.0);
+            // set variance
+            double var = 1.0;
+            if(_sigma.value() > 0.0)
+                var = pow(_sigma.value(), 2.0);
             else
-                var = pow(driver->bottomTracking.velocity[3], 2.0);
-
-            if(!base::isUnknown(var))
             {
-                rbs_velocity.orientation  = driver->status.orientation;
-                rbs_velocity.velocity.x() = driver->bottomTracking.velocity[0];
-                rbs_velocity.velocity.y() = driver->bottomTracking.velocity[1];
-                rbs_velocity.velocity.z() = driver->bottomTracking.velocity[2];
-                rbs_velocity.cov_velocity = var * Eigen::Matrix3d::Identity();
-
-                _velocity_samples.write(rbs_velocity);
+                RTT::log(RTT::Warning) << "Sigma has to be a posstive value! Override it with 0.01" << RTT::endlog();
+                var = pow(0.01, 2.0);
             }
+
+            rbs_velocity.orientation  = driver->status.orientation;
+            rbs_velocity.velocity.x() = driver->bottomTracking.velocity[0];
+            rbs_velocity.velocity.y() = driver->bottomTracking.velocity[1];
+            rbs_velocity.velocity.z() = driver->bottomTracking.velocity[2];
+            rbs_velocity.cov_velocity = var * Eigen::Matrix3d::Identity();
+
+            _velocity_samples.write(rbs_velocity);
         }
         else
         {

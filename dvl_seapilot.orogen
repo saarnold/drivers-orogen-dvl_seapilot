@@ -16,10 +16,8 @@ task_context "Task" do
     # the time interval the device will output the averaged profile/bottom track samples
     property("ensemble_interval", "double", 0.5)
     
-    # Standard deviation override
-    property('sigma_override', 'double', 0.0).
-        doc("If sigma_override is a valid value greater than zero, it will").
-        doc("be used to override the covariance of the velocity measurements.")
+    # Standard deviation of the velocity messurements
+    property('sigma', 'double', 0.01)
         
     #Default variance of avg ground-distance readings
     property("variance_ground_distance", "double", 0.1)
