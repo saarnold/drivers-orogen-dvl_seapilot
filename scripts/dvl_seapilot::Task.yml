@@ -1,0 +1,21 @@
+--- name:default
+# The device address. It can either be serial://PATH[:baudrate],
+# udp://IP_OR_HOSTNAME[:PORT] or tcp://IP_OR_HOSTNAME[:PORT]. Leave empty if
+# you mean to use the io_raw_in and io_raw_out ports.
+io_port: 'serial:///dev/port_dvl:115200'
+# The timeout on read. Defaults to one second
+io_read_timeout:
+  microseconds: 2000000
+# The interval at which the status port should be written. Defaults to one
+# second
+io_status_interval:
+  microseconds: 2000000
+# The timeout on write. Defaults to one second. Used only in direct I/O mode
+io_write_timeout:
+  microseconds: 2000000
+# be used to override the covariance of the velocity measurements.
+sigma: 0.1
+# Default variance of avg ground-distance readings
+variance_ground_distance: 0.1
+# the time interval the device will output the averaged profile/bottom track samples
+ensemble_interval: 0.25
