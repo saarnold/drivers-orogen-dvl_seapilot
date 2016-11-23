@@ -33,7 +33,7 @@ void Task::processIO()
     else
         global_seq += seq - last_seq;
     last_seq = seq;
-    base::Time time = timestamp_estimator->update(base_time, global_seq);
+    base::Time time = timestamp_estimator.update(base_time, global_seq);
 
     // Update the timestamp on each of the fields, and write it on our outputs
     driver->status.time = time;
@@ -121,7 +121,7 @@ void Task::processIO()
     }
 
     // write timestamp estimator status
-     _timestamp_estimator_status.write(timestamp_estimator->getStatus());
+     _timestamp_estimator_status.write(timestamp_estimator.getStatus());
 }
 
 
@@ -141,8 +141,6 @@ bool Task::configureHook()
 
     setDriver(driver.get());
 
-    timestamp_estimator.reset(new aggregator::TimestampEstimator(base::Time::fromSeconds(100),base::Time::fromSeconds(0.1)));
-
     if (! TaskBase::configureHook())
         return false;
     return true;
@@ -153,7 +151,10 @@ bool Task::startHook()
         return false;
 
     driver->startAcquisition();
-    timestamp_estimator->reset();
+    timestamp_estimator.reset(
+            base::Time::fromSeconds(100),
+            base::Time::fromSeconds(_ensemble_interval.value()),
+            INT_MAX);
     last_seq = -1;
 
     return true;

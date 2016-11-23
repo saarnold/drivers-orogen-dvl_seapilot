@@ -30,7 +30,7 @@ namespace dvl_seapilot {
         
     protected:
         boost::shared_ptr<dvl_seapilot::Driver> driver;
-        boost::shared_ptr<aggregator::TimestampEstimator> timestamp_estimator;
+        aggregator::TimestampEstimator timestamp_estimator;
         
         // The sequence number without wraparounds
         uint64_t global_seq;
