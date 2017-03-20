@@ -53,21 +53,25 @@ void Task::processIO()
         base::samples::RigidBodyState rbs_ground_distance;
         rbs_ground_distance.time = time;
         rbs_ground_distance.invalidate();
-        if( (!base::isUnknown<float>(driver->bottomTracking.range[0])) &&
-            (!base::isUnknown<float>(driver->bottomTracking.range[1])) &&
-            (!base::isUnknown<float>(driver->bottomTracking.range[2])) &&
-            (!base::isUnknown<float>(driver->bottomTracking.range[3])) )
-        {
-                //Taking the Average distance to the bottom if all readings are valid
-                double avg = (driver->bottomTracking.range[0] +
-                              driver->bottomTracking.range[1] +
-                              driver->bottomTracking.range[2] +
-                              driver->bottomTracking.range[3])/4.0;
-                
-                avg *= cos(20.0/180.0*M_PI); //20 degree angle of the pistons, convert to distance
-                rbs_ground_distance.position[2] = avg;
-                rbs_ground_distance.cov_position(2,2) = _variance_ground_distance.get();
+
+        // Ground distance calculation using valid beams
+        double sum = 0;
+        unsigned int valid_beams = 0;
+        for (size_t beam_idx = 0; beam_idx < 4; beam_idx++) {
+            if (!base::isUnknown<float>(driver->bottomTracking.range[beam_idx])) {
+                sum += driver->bottomTracking.range[beam_idx];
+                valid_beams++;
+            }
         }
+
+        // Taking the Average distance to the bottom with valid readings
+        if (valid_beams) {
+            double avg = sum / valid_beams;
+            avg *= cos(base::Angle::deg2Rad(20));   //20 degree angle of the pistons, convert to distance
+            rbs_ground_distance.position[2] = -avg;
+            rbs_ground_distance.cov_position(2,2) = _variance_ground_distance.get();
+        }
+
         //Write ground distance even we have no lock, then with NaN information
         _ground_distance.write(rbs_ground_distance);
     }
