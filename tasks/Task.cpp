@@ -22,7 +22,7 @@ void Task::processIO()
 {
     driver->read();
     _device_info.set(driver->deviceInfo);
-      
+
     // Compute the data timestamp
     base::Time base_time = base::Time::now();
     int64_t seq = driver->status.seq;
@@ -63,7 +63,7 @@ void Task::processIO()
                               driver->bottomTracking.range[1] +
                               driver->bottomTracking.range[2] +
                               driver->bottomTracking.range[3])/4.0;
-                
+
                 avg *= cos(20.0/180.0*M_PI); //20 degree angle of the pistons, convert to distance
                 rbs_ground_distance.position[2] = avg;
                 rbs_ground_distance.cov_position(2,2) = _variance_ground_distance.get();
@@ -85,7 +85,7 @@ void Task::processIO()
         rbs_velocity.invalidate();
         rbs_velocity.time = time;
 
-        //check for nans 
+        //check for nans
         if( !base::isUnknown(driver->bottomTracking.velocity[0]) &&
             !base::isUnknown(driver->bottomTracking.velocity[1]) &&
             !base::isUnknown(driver->bottomTracking.velocity[2]) &&
@@ -120,6 +120,8 @@ void Task::processIO()
         RTT::log(RTT::Warning) << "Cannot provide velocity samples in beam coordinate system." << RTT::endlog();
     }
 
+    _blank_after_transmit_distance.write(driver->acqConf.blank_after_transmit_distance);
+
     // write timestamp estimator status
      _timestamp_estimator_status.write(timestamp_estimator.getStatus());
 }
@@ -135,11 +137,16 @@ bool Task::configureHook()
     driver->setEnsembleInterval(_ensemble_interval.value());
     driver->setReadTimeout(_io_read_timeout.value());
     driver->setWriteTimeout(_io_write_timeout.value());
+    driver->setBinSize(_bin_size.value());
+    driver->setBinNumber(_bin_number.value());
+    driver->setBlankLenght(_distance_to_first_bin.value());
 
     if (!_io_port.value().empty())
         driver->open(_io_port.value());
 
     setDriver(driver.get());
+
+    driver->configure();
 
     if (! TaskBase::configureHook())
         return false;

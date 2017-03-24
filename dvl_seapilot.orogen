@@ -11,19 +11,24 @@ using_task_library "iodrivers_base"
 
 task_context "Task" do
     subclasses "iodrivers_base::Task"
-    needs_configuration    
-    
+    needs_configuration
+
     # the time interval the device will output the averaged profile/bottom track samples
     property("ensemble_interval", "double", 0.5)
-    
+
     # Standard deviation of the velocity messurements
     property('sigma', 'double', 0.01)
-        
+
     #Default variance of avg ground-distance readings
     property("variance_ground_distance", "double", 0.1)
-    
+
     #Device information as read from the DVL (read-only)
     property('device_info', 'dvl_teledyne/DeviceInfo')
+
+    # Current Profile parameters
+    property('bin_size', 'double', 0.5)
+    property('bin_number', 'uint8_t', 40)
+    property('distance_to_first_bin', 'double', 0.50)
 
     output_port "status", "dvl_teledyne/Status"
     output_port "cell_samples", "dvl_teledyne/CellReadings"
@@ -31,6 +36,7 @@ task_context "Task" do
     output_port "velocity_samples", "base/samples/RigidBodyState"
     #avg value of the ground distance between all 4 DVL Rays
     output_port "ground_distance", "base/samples/RigidBodyState"
+    output_port "blank_after_transmit_distance", "double"
 
     # Timestamp Estimator
     #
@@ -38,4 +44,3 @@ task_context "Task" do
     # indexes
     output_port "timestamp_estimator_status", "/aggregator/TimestampEstimatorStatus"
 end
-
