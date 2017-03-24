@@ -33,7 +33,8 @@ void Task::processIO()
     else
         global_seq += seq - last_seq;
     last_seq = seq;
-    base::Time time = timestamp_estimator.update(base_time, global_seq);
+    timestamp_estimator.update(base_time, global_seq);
+    base::Time time = base_time;
 
     // Update the timestamp on each of the fields, and write it on our outputs
     driver->status.time = time;
