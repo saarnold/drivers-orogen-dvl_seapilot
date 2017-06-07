@@ -90,7 +90,8 @@ void Task::processIO()
         if( !base::isUnknown(driver->bottomTracking.velocity[0]) &&
             !base::isUnknown(driver->bottomTracking.velocity[1]) &&
             !base::isUnknown(driver->bottomTracking.velocity[2]) &&
-            !base::isUnknown(driver->bottomTracking.velocity[3]) )
+            !base::isUnknown(driver->bottomTracking.velocity[3]) &&
+            evaluateBottomTrackingQuality(driver->bottomTracking))
         {
             // set variance
             double var = 1.0;
@@ -123,6 +124,41 @@ void Task::processIO()
 
     // write timestamp estimator status
      _timestamp_estimator_status.write(timestamp_estimator.getStatus());
+}
+
+bool Task::evaluateBottomTrackingQuality(const dvl_teledyne::BottomTracking& bottom_tracking)
+{
+     if(!_evaluate_bottom_tracking_quality.value())
+         return true;
+
+    // check correlations
+    if(bottom_tracking.correlation[0] < _min_correlation.value() ||
+        bottom_tracking.correlation[1] < _min_correlation.value() ||
+        bottom_tracking.correlation[2] < _min_correlation.value() ||
+        bottom_tracking.correlation[3] < _min_correlation.value())
+    {
+        return false;
+    }
+    // check ping ratios
+    if(bottom_tracking.good_ping_ratio[0] <= 0.0 ||
+        bottom_tracking.good_ping_ratio[1] <= 0.0 ||
+        bottom_tracking.good_ping_ratio[2] <= 0.0 ||
+        bottom_tracking.good_ping_ratio[3] <= 0.0)
+    {
+        return false;
+    }
+    // check evaluation
+    if(bottom_tracking.evaluation[0] <= 0.0 ||
+        bottom_tracking.evaluation[1] <= 0.0 ||
+        bottom_tracking.evaluation[2] <= 0.0 ||
+        bottom_tracking.evaluation[3] <= 0.0)
+    {
+        return false;
+    }
+    if(bottom_tracking.velocity[3] > _max_error_velocity.value())
+        return false;
+
+    return true;
 }
 
 

@@ -18,6 +18,10 @@ task_context "Task" do
     
     # Standard deviation of the velocity messurements
     property('sigma', 'double', 0.01)
+
+    property('evaluate_bottom_tracking_quality', 'bool', false)
+    property('min_correlation', 'double', 0.95)
+    property('max_error_velocity', 'double', 0.04)
         
     #Default variance of avg ground-distance readings
     property("variance_ground_distance", "double", 0.1)

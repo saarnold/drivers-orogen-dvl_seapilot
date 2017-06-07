@@ -37,6 +37,8 @@ namespace dvl_seapilot {
         // The last received sequence number
         int32_t last_seq;
 
+        bool evaluateBottomTrackingQuality(const dvl_teledyne::BottomTracking& bottom_tracking);
+
     public:
         /** TaskContext constructor for Task
          * \param name Name of the task. This name needs to be unique to make it identifiable via nameservices.
